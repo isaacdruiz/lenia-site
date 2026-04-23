@@ -37,7 +37,7 @@ const services = [
   },
   {
     title: "Search Presence",
-    text: "Foundational visibility and Google presence that make your business appear more discoverable and trustworthy.",
+    text: "Foundational visibility that helps your business appear more discoverable, credible, and easy to trust online.",
     details: {
       description:
         "A stronger online foundation so your business looks easier to find, more credible, and more established in search.",
@@ -154,34 +154,35 @@ const workItems = [
 
 const pricingPlans = [
   {
-    title: "Starter",
-    price: "$500",
+    title: "Preview First",
+    price: "$0 upfront",
     features: [
-      "Refined small business website",
-      "Mobile-optimized layout",
-      "Contact form setup",
-      "Thoughtful premium presentation",
+      "Your business is reviewed first",
+      "A custom website preview is built before payment",
+      "See the direction before making a decision",
+      "Zero upfront risk to get started",
     ],
   },
   {
-    title: "Growth",
-    price: "$900",
+    title: "Managed Website",
+    price: "$500 upfront",
+    subprice: "$99/month",
     featured: true,
     features: [
-      "Multi-section signature website",
-      "Foundational search optimization",
-      "Google presence guidance",
-      "Strategic premium presentation",
+      "Custom website build or redesign",
+      "Ongoing updates and edits",
+      "Done-for-you website management",
+      "Priority support",
     ],
   },
   {
-    title: "Ongoing",
-    price: "$99/mo",
+    title: "One-Time Build",
+    price: "Starting at $500",
     features: [
-      "Ongoing edits and refinements",
-      "Hosting guidance",
-      "Priority updates",
-      "Continued support",
+      "Custom website build or redesign",
+      "Mobile-optimized layout",
+      "Foundational search presence",
+      "No ongoing commitment required",
     ],
   },
 ];
@@ -198,23 +199,29 @@ function NavLink({ label, onClick, theme }) {
   );
 }
 
-function Card({ children, theme, featured, onClick, clickable = false }) {
+function Card({ children, theme, featured, onClick, clickable = false, className = "" }) {
+  const Element = clickable ? "button" : "div";
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`w-full h-[400px] flex flex-col text-left rounded-[1.5rem] border pt-3 pb-1 px-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] ${theme.border} ${theme.card} ${featured ? theme.featuredRing : ""} ${clickable ? "cursor-pointer" : "cursor-default"}`}
+    <Element
+      type={clickable ? "button" : undefined}
+      onClick={clickable ? onClick : undefined}
+      className={`w-full h-[400px] flex flex-col text-left rounded-[1.5rem] border pt-3 pb-1 px-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] ${theme.border} ${theme.card} ${featured ? theme.featuredRing : ""} ${clickable ? "cursor-pointer" : "cursor-default"} ${className}`}
     >
       {children}
-    </button>
+    </Element>
   );
 }
 
 function SectionHeader({ title, text, theme }) {
   return (
-    <div className="mb-12">
-      <h2 className="text-4xl tracking-[-0.03em] md:text-5xl">{title}</h2>
-      <p className={`mt-4 max-w-2xl text-base leading-7 ${theme.subtext}`}>{text}</p>
+    <div className="mb-12 text-center flex flex-col items-center">
+      <h2 className="text-4xl tracking-[-0.03em] md:text-5xl max-w-3xl mx-auto">
+        {title}
+      </h2>
+      <p className={`mt-4 max-w-2xl text-base leading-7 ${theme.subtext} text-center`}>
+        {text}
+      </p>
     </div>
   );
 }
@@ -272,11 +279,7 @@ function DetailModal({ item, theme, onClose }) {
 
         {item.image && (
           <div className={`mb-6 overflow-hidden rounded-[1.5rem] border ${theme.border}`}>
-            <img
-              src={item.image}
-              alt={item.title}
-              className="h-56 w-full object-cover"
-            />
+            <img src={item.image} alt={item.title} className="h-56 w-full object-cover" />
           </div>
         )}
 
@@ -307,14 +310,7 @@ function getServiceImagePosition(index) {
 }
 
 function getWorkImagePosition(index) {
-  return [
-    "center 30%",
-    "center 70%",
-    "center 35%",
-    "center 35%",
-    "center 45%",
-    "center 40%",
-  ][index] ?? "center";
+  return ["center 30%", "center 70%", "center 35%", "center 35%", "center 45%", "center 40%"][index] ?? "center";
 }
 
 function getWorkImageClassName() {
@@ -322,9 +318,15 @@ function getWorkImageClassName() {
 }
 
 export default function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [heroReveal, setHeroReveal] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setHeroReveal(true), 400);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const theme = useMemo(
     () => ({
@@ -403,20 +405,24 @@ export default function App() {
               onClick={() => scrollToSection("top")}
               className={`text-left ${theme.text}`}
             >
-              <div className="text-lg tracking-[0.3em] md:text-xl">LENIA</div>
-              <div className={`mt-1 text-sm tracking-[0.3em] md:text-base ${theme.subtext}`}>
-                STUDIOS
-              </div>
+              {darkMode ? (
+                <img
+                  src="/logo-dark.png"
+                  alt="Lenia Studios"
+                  className="h-10 md:h-12 object-contain"
+                />
+              ) : (
+                <img
+                  src="/logo-light.png"
+                  alt="Lenia Studios"
+                  className="h-10 md:h-12 object-contain"
+                />
+              )}
             </button>
 
             <nav className="hidden items-center gap-6 md:flex">
               {nav.map((item) => (
-                <NavLink
-                  key={item.id}
-                  label={item.label}
-                  theme={theme}
-                  onClick={() => scrollToSection(item.id)}
-                />
+                <NavLink key={item.id} label={item.label} theme={theme} onClick={() => scrollToSection(item.id)} />
               ))}
             </nav>
 
@@ -462,46 +468,66 @@ export default function App() {
         </header>
 
         <main id="top">
-          <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-[1.05fr_0.95fr] md:py-24">
-            <div>
-              <h1 className="max-w-4xl text-5xl leading-tight tracking-[-0.03em] md:text-7xl">
-                A more elevated presence for businesses ready to be seen differently.
-              </h1>
-              <p className={`mt-6 max-w-2xl text-base leading-7 ${theme.subtext}`}>
-                Lenia crafts refined websites and elevated digital presence for businesses that want to look exceptional and build trust instantly.
+          <section className="relative mx-auto max-w-6xl px-6 min-h-screen flex items-center">
+            <div className="pointer-events-none absolute inset-0 -z-10">
+              <div className="absolute left-1/2 top-[-120px] h-[400px] w-[600px] -translate-x-1/2 rounded-full bg-white/5 blur-3xl" />
+            </div>
+
+            <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
+              <p className={`mb-6 text-xs uppercase tracking-[0.32em] ${theme.subtext}`}>
+                Custom websites for modern businesses
               </p>
 
-              <div className="mt-12 flex flex-wrap gap-4">
+              <div className="relative flex flex-col items-center">
+                <div className="flex h-[110px] flex-col items-center justify-start md:h-[180px] xl:h-[210px]">
+                  <h1 className="max-w-5xl text-7xl leading-[0.95] tracking-[-0.05em] md:text-9xl xl:text-[7.5rem]">
+                    We build your website
+                  </h1>
+                </div>
+
+                <div
+                  className={`pointer-events-none absolute top-[70px] transition-all duration-[2200ms] ease-[cubic-bezier(0.16,1,0.3,1)] delay-200 md:top-[110px] xl:top-[130px] ${heroReveal ? "translate-y-0 opacity-100" : "translate-y-[4px] opacity-0"}`}
+                >
+                  <div className={`text-6xl font-semibold tracking-[-0.045em] md:text-8xl xl:text-[6rem] ${darkMode ? "text-white/90" : "text-black"}`}>
+                    before you pay.
+                  </div>
+                </div>
+              </div>
+
+              <p className={`mt-8 max-w-xl text-lg leading-8 md:text-xl ${theme.subtext}`}>
+                LENIA Studios creates custom websites and redesigns for businesses that want to look more modern, credible, and easier to trust online.
+                <span className="mt-2 block">See a preview first, then decide if it’s the right fit.</span>
+              </p>
+
+              <div className={`mt-10 flex flex-wrap items-center justify-center gap-6 text-base ${darkMode ? "text-white/60" : "text-black/55"}`}>
+                <div>✔ No upfront payment</div>
+                <div>✔ Custom-built for your business</div>
+                <div>✔ Designed to convert</div>
+              </div>
+
+              <div className="mt-12 flex flex-wrap justify-center gap-4">
                 <button
                   type="button"
                   onClick={() => scrollToSection("contact")}
-                  className={`rounded-full px-5 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${theme.buttonPrimary}`}
+                  className={`rounded-full px-6 py-3.5 text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${theme.buttonPrimary}`}
                 >
-                  Request a Private Demo
+                  Request Your Website Preview
                 </button>
                 <button
                   type="button"
                   onClick={() => scrollToSection("work")}
-                  className={`rounded-full px-5 py-3 transition-all duration-300 hover:-translate-y-0.5 ${theme.buttonSecondary}`}
+                  className={`rounded-full px-6 py-3.5 text-sm transition-all duration-300 hover:-translate-y-0.5 ${theme.buttonSecondary}`}
                 >
-                  View Work
+                  See Preview Examples
                 </button>
               </div>
-            </div>
-
-            <div className={`overflow-hidden rounded-[2rem] border ${theme.border} ${theme.imageFrame}`}>
-              <img
-                src={sectionImages.hero}
-                alt="Luxury office workspace"
-                className="h-[420px] w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
-              />
             </div>
           </section>
 
           <section id="services" className="mx-auto max-w-6xl scroll-mt-28 px-6 py-20">
             <SectionHeader
               title="Digital services for businesses that need a stronger online presence."
-              text="Lenia offers refined website design, search presence, and brand presentation for businesses that want to look more established online."
+              text="Lenia offers refined website design, search visibility, and brand presentation to help your business look more modern, credible, and established online."
               theme={theme}
             />
             <div className="grid gap-6 md:grid-cols-3">
@@ -525,9 +551,7 @@ export default function App() {
                     <p className={`mt-3 leading-7 ${theme.subtext}`}>{item.text}</p>
 
                     <div className="mt-12">
-                      <span className={`text-xs uppercase tracking-[0.22em] ${theme.subtext}`}>
-                        View Details
-                      </span>
+                      <span className={`text-xs uppercase tracking-[0.22em] ${theme.subtext}`}>View Details</span>
                     </div>
                   </div>
                 </Card>
@@ -562,9 +586,7 @@ export default function App() {
                     <p className={`mt-3 leading-7 ${theme.subtext}`}>{item.text}</p>
 
                     <div className="mt-12">
-                      <span className={`text-xs uppercase tracking-[0.22em] ${theme.subtext}`}>
-                        View Details
-                      </span>
+                      <span className={`text-xs uppercase tracking-[0.22em] ${theme.subtext}`}>View Details</span>
                     </div>
                   </div>
                 </Card>
@@ -573,55 +595,58 @@ export default function App() {
           </section>
 
           <section id="pricing" className="mx-auto max-w-6xl scroll-mt-28 px-6 py-20">
-            <div className={`mb-10 overflow-hidden rounded-[2rem] border ${theme.border}`}>
-              <img
-                src={sectionImages.pricing}
-                alt="Business planning and pricing"
-                className="h-56 w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
-              />
-            </div>
             <SectionHeader
-              title="Straightforward pricing, presented with clarity."
-              text="Simple packages for businesses that want a more polished digital presence without unnecessary complexity."
+              title="Choose the level of support that fits your business best."
+              text="Start with a preview, then decide whether you want a one-time build or a managed website with ongoing support, edits, and updates."
               theme={theme}
             />
             <div className="grid gap-6 md:grid-cols-3">
               {pricingPlans.map((plan) => (
                 <Card key={plan.title} theme={theme} featured={plan.featured}>
-                  <div className="flex items-center justify-between gap-4">
-                    <h3 className="text-2xl">{plan.title}</h3>
-                    {plan.featured && (
-                      <span className={`rounded-full border px-3 py-1 text-xs ${theme.border}`}>
-                        Most Popular
-                      </span>
+                  <div className="flex h-full flex-col">
+                    <div className="flex items-center justify-between gap-4">
+                      <h3 className="text-2xl">{plan.title}</h3>
+                      {plan.featured && (
+                        <span className={`rounded-full border px-3 py-1 text-xs ${theme.border}`}>
+                          Most Popular
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="mt-4 text-3xl">{plan.price}</div>
+                    {plan.subprice && (
+                      <div className={`mt-2 text-sm uppercase tracking-[0.18em] ${theme.subtext}`}>
+                        {plan.subprice}
+                      </div>
                     )}
+
+                    <ul className={`mt-6 space-y-3 ${theme.subtext}`}>
+                      {plan.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-3">
+                          <Check className="mt-1 h-4 w-4 shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-auto pt-6 pb-2">
+                      <button
+                        type="button"
+                        onClick={() => scrollToSection("contact")}
+                        className={`w-full rounded-full px-5 py-3 ${theme.buttonPrimary}`}
+                      >
+                        Get Started
+                      </button>
+                    </div>
                   </div>
-                  <div className="mt-4 text-3xl">{plan.price}</div>
-                  <ul className={`mt-6 space-y-3 ${theme.subtext}`}>
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-3">
-                        <Check className="mt-1 h-4 w-4 shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection("contact")}
-                    className={`mt-12 rounded-full px-5 py-3 ${theme.buttonPrimary}`}
-                  >
-                    Inquire
-                  </button>
                 </Card>
               ))}
             </div>
           </section>
 
           <section id="contact" className="mx-auto max-w-6xl scroll-mt-28 px-6 py-20">
-            <div className="mb-12">
-              <h2 className="text-4xl tracking-[-0.03em] md:text-5xl">
-                Request a private demo for your business.
-              </h2>
+            <div className="mb-12 text-center flex flex-col items-center">
+              <h2 className="text-4xl tracking-[-0.03em] md:text-5xl max-w-4xl md:whitespace-nowrap">Request a private demo for your business.</h2>
               <p className={`mt-4 max-w-2xl text-base leading-7 ${theme.subtext}`}>
                 Share a few details and Lenia will prepare a tailored homepage concept that reflects a more elevated digital direction.
               </p>
@@ -641,10 +666,7 @@ export default function App() {
                   onSubmit={handleSubmit}
                   className={`flex h-full flex-col gap-4 rounded-[1.5rem] border p-4 ${theme.border} ${theme.card}`}
                 >
-                  <input
-                    placeholder="Your name"
-                    className={`rounded-xl border p-4 outline-none ${theme.border} ${theme.input}`}
-                  />
+                  <input placeholder="Your name" className={`rounded-xl border p-4 outline-none ${theme.border} ${theme.input}`} />
                   <input
                     placeholder="Email address"
                     type="email"
@@ -660,10 +682,7 @@ export default function App() {
                     className={`rounded-xl border p-4 outline-none ${theme.border} ${theme.input}`}
                   />
                   <div className="mt-auto">
-                    <button
-                      type="submit"
-                      className={`w-full rounded-full px-5 py-3 ${theme.buttonPrimary}`}
-                    >
+                    <button type="submit" className={`w-full rounded-full px-5 py-3 ${theme.buttonPrimary}`}>
                       Submit Request
                     </button>
                   </div>
@@ -676,7 +695,7 @@ export default function App() {
             <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
               <div>
                 <div className="text-sm tracking-[0.3em]">LENIA</div>
-                <p className={`mt-2 ${theme.subtext}`}>Built on legacy.</p>
+                <p className={`mt-2 ${theme.subtext}`}>Engineered for Growth. Built for Legacy.</p>
               </div>
               <button
                 type="button"
@@ -690,9 +709,7 @@ export default function App() {
         </main>
       </div>
 
-      {selectedItem && (
-        <DetailModal item={selectedItem} theme={theme} onClose={() => setSelectedItem(null)} />
-      )}
+      {selectedItem && <DetailModal item={selectedItem} theme={theme} onClose={() => setSelectedItem(null)} />}
     </>
   );
 }
